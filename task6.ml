@@ -76,3 +76,55 @@ let brightness delta pixels =
                       +. 0.05 *. float_of_int pixels.(i+1).(j).b
                       +. 0.05 *. float_of_int pixels.(i+1).(j+1).b))
                       |> min 255 |>
+(*Another solution*)
+(*Task 2*)
+(*Screen*)
+(*You are given the type
+1 type pixel ={ r : int ; g : int ; b : int };;
+representing a pixel and the intensity of red, green and blue, as integers between
+0 and 255.*)
+(*a.Write a function brightness : int -> pixel array array -> pixel
+array array = <fun> that increases/decreases all integers in all pixels
+in the input pixel array array by the provided integer. The resulting
+integers should not go below 0 or above 255.*)
+(*b.Write a function blur : pixel array array -> pixel array array
+= <fun> that blurs the input pixel array array. Pixels on the border
+are unchanged, all other pixels colors however are recomputed. The new
+value is 60% of the original + 5% of every neighboring pixel (out of 8).
+Round down at the very end.*)
+(*Solutions*)
+(a) let clamp value min_val max_val =
+max min_val (min value max_val)
+
+let brightness delta pixels =
+Array.map (fun row ->
+Array.map (fun pixel ->
+let r' = clamp (pixel.r + delta) 0 255 in
+let g' = clamp (pixel.g + delta) 0 255 in
+let b' = clamp (pixel.b + delta) 0 255 in
+{r=r'; g=g'; b=b'}) row) 
+pixels
+
+(b) let blur pixels =
+let rows = Array.length pixels in
+let cols = Array.length pixels.(0) in
+let new_pixels = Array.make_matrix rows cols {r=0; g=0; b=0} in
+for i = 1 to rows - 2 do
+for j = 1 to cols - 2 do
+let p = pixels.(i).(j) in
+let r = (p.r +
+pixels.(i-1).(j-1).r + pixels.(i-1).(j).r + pixels.(i-1).(j+1).r +
+pixels.(i).(j-1).r + pixels.(i).(j+1).r +
+pixels.(i+1).(j-1).r + pixels.(i+1).(j).r + pixels.(i+1).(j+1).r) / 9 in
+let g = (p.g +
+pixels.(i-1).(j-1).g + pixels.(i-1).(j).g + pixels.(i-1).(j+1).g +
+pixels.(i).(j-1).g + pixels.(i).(j+1).g +
+pixels.(i+1).(j-1).g + pixels.(i+1).(j).g + pixels.(i+1).(j+1).g) / 9 in
+let b = (p.b +
+pixels.(i-1).(j-1).b + pixels.(i-1).(j).b + pixels.(i-1).(j+1).b +
+pixels.(i).(j-1).b + pixels.(i).(j+1).b +
+pixels.(i+1).(j-1).b + pixels.(i+1).(j).b + pixels.(i+1).(j+1).b) / 9 in
+new_pixels.(i).(j) <- {r=r; g=g; b=b}
+done
+done;
+new_pixels
