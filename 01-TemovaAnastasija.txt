@@ -1,0 +1,59 @@
+(* Task 1: Minimum and Maximum *)
+
+let rec min_and_max list =                            
+  match list with                                     
+  | [] -> []                                          
+  | hd :: tl ->                                                       
+      let min_x, max_x = find_min_max hd hd tl in [min_x; max_x]      
+      and find_min_max min_x max_x list =                             
+        match list with                                               
+          | [] -> (min_x, max_x)                                      
+          | hd :: tl ->                                               
+            let new_min_x = if hd < min_x then hd else min_x in       
+              let new_max_x = if hd > max_x then hd else max_x in     
+              find_min_max new_min_x new_max_x tl ;;                  
+
+
+(* Task 2: Insert and Merge *)
+
+let rec insert_and_merge list (key, value) =                        
+  match list with                                                   
+  | [] -> [(key, value)]                                       
+  | (k, v)::tl ->                                              
+      if key < k then (key, value)::list                       
+      else if key = k then (k, v + value)::tl                  
+      else (k, v)::(insert_and_merge tl (key, value)) ;;       
+
+
+(* Task 3: Apply to each sublist *)
+
+let rec apply_to_each_sublist list f defaultValue =                                     
+  match list with                                                                       
+  | [] -> []                                                                            
+  | hd::tl when (hd=[])-> defaultValue :: (apply_to_each_sublist tl f defaultValue)     
+  | hd::tl ->                                                                           
+    let rec apply_to_list l =                                                           
+      match l with                                                                      
+      | [] -> defaultValue                                                              
+      | [x] -> x                                                                        
+      | x::y::tl -> apply_to_list ((f x y) :: tl)                                       
+        in                                                                              
+        (apply_to_list hd) :: (apply_to_each_sublist tl f defaultValue) ;;              
+
+
+
+(* Task 4: Does it hold for list? *)
+
+let rec holds_for_lists lst1 lst2 f =   
+  match lst1, lst2 with                 
+  | [], [] -> true                      
+  | hd1 :: tl1, hd2 :: tl2              
+  -> f hd1 hd2                       
+  && holds_for_lists tl1 tl2 f    
+  | _, _ -> false ;;                    
+
+
+
+(* Name Surname, Student ID, Study program, Assistant surname *)
+
+(* Anastasija Temova, 89221055, Computer Science EN, Šišič *)
