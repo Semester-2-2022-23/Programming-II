@@ -84,3 +84,7 @@ end;;
 let c = new child "Whatever" "Sur" 10 'F';;
 c#getSex;;
 *)
+
+(*
+
+*)
