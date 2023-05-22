@@ -83,8 +83,46 @@ method toString =
 end;;
 let c = new child "Whatever" "Sur" 10 'F';;
 c#getSex;;
+
+type person = { name : string; mutable surname : string }
 *)
 
 (*
+class family (m : male) (f : female) =
+  object (self)
+    val couple = (m, f)
+    val mutable children = ([] : child list)
+    method getCouple = couple
+    method getChildren = children
+    method addChild c = 
+      c#setSurname (fst couple)#surname
+      children <- c :: children
+    initializer f#setSurname m#getSurname
+  end;;
+let f = new female "Oprah" "Winfrey" 70;;
+let c = new child "C1" "C2" 50 'F';;
+let fam = new family m f;;
+f#getSurname;;
+*)
 
+(*
+class virtual shape pColor pNumEdges =
+object
+  val color = pColor
+  val numEdges = pNumEdges
+  method virtual getArea : int
+  method virtual circumference : int
+end;;
+
+class square sColor eSize =
+object
+inherit shape sColor 4
+method getArea = eSize*eSize
+method getCircumference = 4*eSize
+end;;
+
+let s = new shape "blue" 5;;
+let sq = new square "red" 5;;
+sq#getArea;;
+sq#circumference;;
 *)
