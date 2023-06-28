@@ -1,184 +1,120 @@
-type 'a someType = { intVal:int; aVa1:'a };;
-let b = { intVal=5; aVa1=true };;
-let c = { intVal=0; aVa1='f' };;
-let d = { intVal=0; aVa1='f' };;
-let e = { intVal=0; aVa1='h' };;
-
-c = d;;
-d = e;;
-(* b = c;; *)
-type vehicle =
-  { typo:string; color:string; manufactureYear:int };;
-
-let v1 = { typo="Car"; color="Green"; manufactureYear=1997 };;
-let v2 = { color="Black"; manufactureYear=2010; typo="JetSki"};;
-
-v1.typo;;
-v2.typo;;
-v2.manufactureYear;;
-
-(* we declare a list from type vehicle *)
-[v1; v2];;
-type person = 
-  { name : string; surname : string; age : int; occ : string };;
-let pA = { name = "Iztok"; surname = "Savnik"; age=50; occ="Proffessor"};;
-pA.name;;
-pA.age;;
-
-
-let youngerPerson p =
-  { name = p.name; occ = p.occ; age = p.age-20; surname = p.surname };;
-
-youngerPerson pA;;
-pA.age;;
-
-
-type mutablePerson = 
-  { name : string; surname : string; mutable age : int; occ : string };;
-let mpA = { name = "Iztok"; surname = "Savnik"; age=55; occ="Proffessor"};;
-mpA.age;;
-(* mpA.age <- 35;; *)
-mpA.age;; 
-type _2Dpoint =
-  { mutable x:float; mutable y:float };;
-
-let point = { x = 3.5; y = 5.3 };;
-point;;
-
-let swap p =
-  let temp = p.x in 
-  p.x <- p.y;
-  p.y <- temp;;
-;;
-swap point;;
-point;;
-type floatOrBool = F of float | B of bool;;
-
-let a = F 5.0;;
-let b = F 5.0;;
-let c = B true;;
-
-a = b;;
-b = c;;
-type listOr2tuple = L of int list | T of int * int;;
-let a = L [2; 3];;
-T (4, 5);;
-
-(* in case the type is unknown, this is the way to check *)
-(true, 5);;
-[[(Array.make 5 1)]];;
-type color = Red | Green | Blue | White;;
-type color2 = 
-  | Red
-  | Green 
-  | Blue 
-  | White
-  | RGB of int * int * int;;
-
-let a = Red;;
-let b = Blue;;
-let c = RGB (0, 0, 0);;
-type color = Red | Green | Blue | White;;
-type color2 = 
-  | Red
-  | Green 
-  | Blue 
-  | White
-  | RGB of int * int * int;;
-
-let a = Red;;
-let b = Blue;;
-let c = RGB (0, 0, 0);;
-
-c;;
-
-match c with
-  | RGB (r, g, b) -> (r, g, b)
-  | Red -> (255, 0, 0)
-  | Green -> (0, 255, 0)
-  | Blue -> (0, 0, 255)
-  | White -> (255, 255, 255);;
-  type color2 = 
-  | Red
-  | Green 
-  | Blue 
-  | White
-  | RGB of int * int * int;;
-
-let a = Red;;
-let b = Green;;
-let c = RGB (25, 254, 107);;
-c;;
-
-let rgb c =
-  match c with 
-  | Red -> (255, 0, 0)
-  | Green -> (0, 255, 0)
-  | Blue -> (0, 0, 0)
-  | White -> (255, 255, 255)
-  | RGB (r, g, b) -> (r, g, b);;
-
-rgb a;;
-rgb b;;
-rgb c;;
-type ('a, 'b) someType = V1 of int | V2 of 'a | V3 of 'b;;
-let a = V2 "b";;
-let b = V3 false;;
-let c = V2 0;;
-
-[a; b];;
-[b; c];;
-(* [a; c];; *)
-type 'a aType = Int of int | B of 'a;;
-let n = Int 10;;
-let m = B "true";;
-
-
-type ('a, 'b) gORh = G of 'b | H of 'a;;
-G true;;
-H false;;
-(* first type types were called product types *)
-(* these are called sum types*)
-
-type myInt = A of int;;
-let b = A 5;;
-
-type myString = S of string;;
-S "hello, world!";;
-
-type intOrFloat = G of int | F of float;;
-let a = G 10;;
-let b = F 10.0;;
-a = b;;
-type integerList = Empty | IList of int * integerList ;;
-let emptyList = Empty;;
-let oneElementList = IList (7, Empty);;
-let twoElementList = IList (5, IList (6, Empty));;
-let threeElementList = IList (8, twoElementList);;
-
-threeElementList;;
-
-let getT l =
-  match l with
-  | IList (_, t) -> t
-  | Empty -> Empty;;    (* this line of code was written by me *)
-
-getT threeElementList;;
-(* custom types *)
-let p1 = ("Zhivko", "Stoimchev", 20, "Student");;
-
-(* find age of tuple custom *)
-let p1 = ("Zhivko", "Stoimchev", 20, "Student");;
-let getAge p =
-  match p with
-  | (_, _, age, _) -> age;;
-getAge p1;;
-getAge (false, false, false, false);;   (* we get false, it is problem, because it can be applied to every 4 tuple *)
-(* now to fix it` *)
-
-(* we define our own type *)
-type person = 
-  { name : string; surname : string; age : int; occ : string };;
-let pA = { name = "Iztok"; surname = "Savnik"; age=50; occ="Proffessor"};;
-pA.name;;
-pA.age;;
+(*exe1*)
+(*Write a function that counts the numbers of apples in the warehouse. Do
+the same for pears.*)
+let count_apples wh =
+  let basket_list = wh#get_baskets in
+  let rec count list = match list with
+  | [] -> 0
+  | h::t -> h#get_apples + count t in
+  count basket_list;;
+  let count_pears wh =
+  let basket_list = wh#get_baskets in
+  let rec count list = match list with
+  | [] -> 0
+  | h::t -> h#get_pears + count t in
+  count basket_list;;
+(*exe2*)
+(*Add a method to the class warehouse, that deletes a basket at position i.*)
+method delete i =
+  let rec delete i list = match list with
+  | [] -> []
+  | h::t when (i=0) -> t
+  | h::t -> h :: delete (i-1) t in
+  baskets <- delete i baskets
+(*exe3*)
+(*Add a method to the class warehouse that returns the basket with the most
+fruit in it.*)
+method most_fruit =
+  let compare basket1 basket2 =
+  if basket1#count > basket2#count then basket1
+  else basket2 in
+  let rec most list = match list with
+  | [] -> failwith "no basket exists"
+  | [h] -> h
+  | h::t -> compare h (most t) in
+  most baskets
+(*task4*)
+(*Add a method to the class warehouse that returns a pair consisting of two
+lists of baskets, one where there are strictly more apples and the other one where there
+are strictly more pears.*)
+method more_apples_pears =
+  let rec more list (a,p) = match list with
+  | [] -> (a, p)
+  | h::t -> if (h#get_apples > h#get_pears) then more t (a @ [h], p)
+  else if (h#get_apples < h#get_pears) then more t (a, p @ [h])
+  else more t (a, p)
+  in
+  more baskets ([], [])
+(*task5*)
+(*Declare a class exam exercise with the following properties:
+• variables: total points, points (a student got), difficulty (1 − 3)
+• methods get for each instance variable
+• methods set for points and difficulty
+• method to string that prints all the information of the exam exercise
+then declare a class exam with the following properties:
+• variables: exam name, exam time, exercises (storing a list of exercises)
+• methods to set exam name and time
+• methods that get exam name, time and a list of exercises
+• method that returns a list of exercises of a given difficulty
+• method that calculates the total number of points on the exam
+• method that calculates the grade with percentages (50 − 59: 6, 60 − 69: 7, 70 − 79:
+8, 80 − 89: 9, 90 − 100: 10 and 0 otherwise).
+Then create an exam with at least 5 exam exercises and print the information of all the
+exercises on the exam.*)
+class exam_exercise (tPoints:int) =
+object (self)
+val total_points = tPoints
+val mutable points = 0
+val mutable difficulty = 0
+method get_total_points = total_points
+method get_points = points
+method get_difficulty = difficulty
+method set_points p = points <- p
+method set_difficulty d = difficulty <- d
+method toString = print_newline ();
+print_string "----------------"; print_newline ();
+print_string ("Total points: " ^ string_of_int total_points);
+print_newline ();
+print_string ("Points: " ^ string_of_int points);
+print_newline ();
+print_string ("Difficulty: " ^ string_of_int difficulty);
+print_newline ();
+print_string "----------------"; print_newline ()
+end;;
+class exam (eList : exam_exercise list) =
+object (self)
+val mutable exam_name = ""
+val mutable exam_time = 0
+val mutable exercises = eList
+method get_name = exam_name
+method get_time = exam_time
+method get_exercises = exercises
+method set_name name = exam_name <- name
+method set_time time = exam_time <- time
+method get_exercisesD d =
+let rec byDifficulty eList d2 = match eList with
+| [] -> []
+| h::t when (h#get_difficulty = d2) -> h :: byDifficulty t d2
+| h::t -> byDifficulty t d2 in
+byDifficulty exercises d
+method countPoints =
+  let rec count eList = match eList with
+  | [] -> 0
+  | h::t -> h#get_total_points + count t in
+  count exercises
+  method private countObtainedPoints =
+  let rec count eList = match eList with
+  | [] -> 0
+  | h::t -> h#get_points + count t in
+  count exercises
+  method get_grade =
+  let grade = match (((float_of_int self#countObtainedPoints) /.
+  (float_of_int self#countPoints))*. 10) with
+  | x when (x < 5) -> 0
+  | x when (x < 6) -> 6
+  | x when (x < 7) -> 7
+  | x when (x < 8) -> 8
+  | x when (x < 9) -> 9
+  | _ -> 10 in
+  grade
+  end;;

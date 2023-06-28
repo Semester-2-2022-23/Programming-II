@@ -1,80 +1,207 @@
-function x -> x + 1;;
+(*examples*)
 fun x -> x + 1;;
-fun x -> x +. 1.;;
 fun x -> x;;
-(fun x -> x) 2;;
-let f = fun x -> x + 1;;
-(f) 2;;
-f 2;;
+(fun x -> x + 1) 1;;
+let f = fun x -> x;;
+let x = x;;
+val f: 'a -> 'a = <fun>
+f1;;
 f(-1);;
-fun (a,b) -> (a,b);;
-fun a b -> a + b;;
-let sum a b = a + b;;
-sum 2 7;;
-sum 2;;
-let sumWith2 = sum 2;;
-sumWith2 9;;
-((sum) 2) 9;;
-
-fun x -> x*x;;
-(fun x -> x*x) 5;;
-let f (a,b) = [a;b];;
-let max a b = if a > b then a else b;;
-max 5 10;;
-max 5 9;;
-let f (a, b) = (a, b);;
-
-let rec sumToN n = if (n = 0) then 0 else n + sumToN (n - 1);;
+let sub a b = a - b;;
+val sub: int -> int -> int = <fun>
+sub 5 4;;
+let subFrom5 = sub 5;;
+val subFrom5: int -> int = <fun>
+subFrom5 4;; 
+(*exe1*)
+(*
+Write a function that:
+• takes x and returns the square of x
+• takes a 2-tuple and returns its values in a list
+• takes two numbers and returns the larger one (e.g. by using the "if"
+statement
+*)
+let square x = x * x1let tuple_to_list (x,y) = [x;y]
+let find_larger x y = 
+  if x > y then
+    x
+  else
+    y
+(*exe2*)
+(*
+Write a function that:
+• takes x and returns the square of x
+let square x = x*x;;
+• takes a 2-tuple and returns its values in a list
+let tupleToList (c, d) = [c; d];;
+• takes two numbers and returns the larger one (e.g. by using the "if"
+statement
+let max a b =
+if a > b then a else b;;
+*)
+let square x = x * x
+let tuple_to_list (c, d) = [c; d]
+let max a b =
+  if a > b then
+    a
+  else
+    b
+let result1 = square
+let result2 = tuple_to_list (3, 7) 
+let result3 = max 10 8 
+let () =
+  print_endline ("Square: " ^ string_of_int result1);
+  print_endline ("Tuple to List: " ^ (string_of_list string_of_int result2));
+  print_endline ("Max: " ^ string_of_int result3)
+(*exe3 -> recursion*)
+(*
+• let rec sumToN n =
+if (n = 0) then 0
+else n + sumToN (n - 1);;
+val sumToN : int -> int = <fun>
+sumToN 4;;
+- : int = 10
+et rec createList n =
+if n = 1 then [1]
+else createList (n-1) @ [n];;
 sumToN 5;;
-let rec createList n = if (n = 1) then [1] else createList (n - 1) @ [n];;
-createList 20;;
-List.hd[1; 2; 3];;
-List.tl[1; 2; 3];;
-List.hd[1];;
-List.tl[1];;
-let rec sumList 1 = if (l = []) then 0 else List.hd l + sumList (List.tl l);;
-let rec f n = if n = 0 then 1 else (f (n-1)) * n;;
-f 5;;
-let rec reverseL l = if l = []  then [] else (reverseL (List.tl)) @ [List.hd l];;
-reverseL [5; 4; 3; 2; 1];;
+- : int list = [1; 2; 3; 4; 5]
+Execution of sumToN 4:
+sumToN 4 = 4 + sumToN 3 = 4 + (3 + sumToN 2) = 4 + (3 + (2 + sumToN 1))
+= 4 + (3 + (2 + (1 + sumToN 0))) = 4 + (3 + (2 + (1 + 0)))
+= 4 + (3 + (2 + 1)) = 4 + (3 + 3) = 4 + 7 = 10
+*)
+let rec sumToN n =
+  if n = 0 then
+    0
+  else
+    n + sumToN (n - 1)
 
-match 1 with 
-| 1 -> true
-| 2 -> false;;
-
-let x = 10;;
-match x with
-| 1 -> 1
-| 2 -> 2
-| _ -> 10;;
-
-let isEmptyList l =
-  match l with
-  | [] -> true
+    let rec createList n =
+      if n = 1 then
+        [1]
+      else
+        createList (n - 1) @ [n]
+(*examples -> recursion*)
+(*handling lists*)
+List.tl [1];;
+List.tl [1; 2];;
+List.hd [3];;
+let rec sumList list =
+  if list = [] then 0
+  else(List.hd list) + sumList(List.tl list);;
+(*exe4*)
+(*
+Write a function that:
+• computes n! (n factorial) for integer n
+• reverses a list
+*)
+let rec factorial n =
+  if n = 0 then
+    1
+  else
+    n * factorial (n - 1)
+let rec reverse_list lst =
+  match lst with
+  | [] -> []
+  | head :: tail -> (reverse_list tail) @ [head]
+(*exe5*)
+(*
+Write a function that:
+• computes n! (i.e., n factorial) for integer n
+let rec factorial n =
+if n = 1 then 1
+else n * factorial (n-1);;
+• reverses a list
+let rec reverseList list =
+if list = [] then []
+else reverseList (List.tl list) @ [List.hd list];;
+*)
+let rec factorial n =
+  if n = 1 then
+    1
+  else
+    n * factorial (n - 1)
+let rec reverseList list =
+  if list = [] then
+    []
+  else
+    reverseList (List.tl list) @ [List.hd list]
+(*examples -> pattern matching*)
+let isBetween0and5 n =
+  match n with
+  | 0 | 1 | 2 | 3 | 4 | 5 -> true
   | _ -> false;;
-isEmptyList [];;
 
-match 'd' with 
-| 'a' | 'b' | 'c' -. true;;
+let rec sumList l =
+    match l with
+    | [] -> 0
+    | h::t -> h + sum t;;
+(*exe6*)
+(*
+Write a function that:
+• checks if a given character is a vowel (‘a’, ‘e’, ‘i’, ‘o’, or ‘u’)
+• finds the length of a list
+• reverses a list using pattern matching
+• returns the last element for a list of integers and 0 for an emtpy list
+*)
+  let is_vowel c =
+    match c with
+    | 'a' | 'e' | 'i' | 'o' | 'u' -> true
+    | _ -> false
+  let rec length_of_list lst =
+    match lst with
+    | [] -> 0
+    | _ :: tail -> 1 + length_of_list tail
+  let rec reverse_list lst =
+    match lst with
+    | [] -> []
+    | head :: tail -> reverse_list tail @ [head]
+  let rec last_element lst =
+    match lst with
+    | [] -> 0
+    | [x] -> x
+    | _ :: tail -> last_element tail
+(*exe7*)
+(*
+Write a function that:
+• checks if a given character is a vowel (‘a’, ‘e’, ‘i’, ‘o’, or ‘u’)
+let isVowel c = match c with
+| ’a’ | ’e’ | ’i’ | ’o’ | ’u’ -> true
 | _ -> false;;
-
-let sumList l =
-  match l
-  | _ -> 0
-  | h::t -> h + sumList t;;
-
-let isVowel c =
-  match c with
-  | 'a' | 'e' | 'i' | 'o' | 'u' -> true
-  | _ -> false;;
-
-let rec len l =
+• finds the length of a list
+let rec getListLength list = match list with
+| [] -> 0
+| _::t -> 1 + getListLength t;;
+*)
+  let isVowel c = 
+    match c with
+    | 'a' | 'e' | 'i' | 'o' | 'u' -> true
+    | _ -> false
+  let rec getListLength list =
+    match list with
+    | [] -> 0
+    | _::t -> 1 + getListLength t
+(*exe8*)
+(*
+Write a function that:
+• reverses a list using pattern matching
+let rec reverseList list = match list with
+| [] -> []
+| h::t -> reverseList t @ [h];;
+• returns the last element for a list of integers and 0 for an emtpy list
+let rec getLastInteger l =
+match l with
+| [] -> 0
+| [e] -> e
+| h::t -> getLastInteger t;;
+*)
+let rec reverseList list =
+  match list with
+  | [] -> []
+  | h::t -> reverseList t @ [h]
+let rec getLastInteger l =
   match l with
   | [] -> 0
-  | _::t -> 1 + len t;; 
-
-let rec reversaL l =
-  match l with
-  | [] -> []
-  | h::t -> (reversaL t) @ [h];;
-revreversaL [0, -1, -2];;
+  | [e] -> e
+  | _::t -> getLastInteger t
