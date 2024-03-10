@@ -1,0 +1,321 @@
+(*Homework 3*)
+
+(*Task 1*)
+(*Queue*)
+(*We are given a class stack.
+class [ ’ a ] stack = object
+val mutable seznam =([]: ’ a list )
+method empty =[]= seznam
+method pop =let r = List . hd seznam in seznam < - List . tl
+seznam ; r
+method push elm = seznam < - elm :: seznam
+method reverse = seznam < - List . rev seznam
+end ;;
+The above stack type includes the methods needed for this exercise. Note
+that the method reverse reverses the elements stored on the stack and the
+method empty returns true if and only if the stack is empty.
+Implement a class queue with the following type
+class [ ’ a ] queue :
+object
+method dequeue : ’a
+method enqueue : ’a -> unit
+end                                                                                                                                                                                                   
+The class queue uses two instances of a class stack. The first stack is used
+for storing the inserted new element. The second stack is used for retrieving
+the elements from the queue. If the second stack is empty and the first is not,
+then the first is reversed and stored as the second. The method enqueue inserts
+an element to the beginning of a queue, and the method dequeue returns an
+element from the end of the queue.
+# let q1 = new queue ;;
+# q1 # enqueue 1 ;;
+- : unit = ()
+# q1 # enqueue 2 ;;
+- : unit = ()
+# q1 # dequeue ;;
+- : int = 1
+# q1 # dequeue ;;
+- : int = 2
+# let q2 = new queue ;;
+# q2 # enqueue " First " ;;
+- : unit = ()
+# q2 # dequeue ;;
+- : string = " First "
+# q2 # enqueue " Second " ;;
+- : unit = ()
+# q2 # enqueue " Third " ;;
+- : unit = ()
+# q2 # dequeue ;;
+- : string = " Second "
+# q2 # dequeue ;;
+- : string = " Third "*)
+
+(*Solution*)
+class ['a] queue =
+  object (self)
+    val mutable inbox = new stack
+    val mutable outbox = new stack
+    method dequeue : 'a =
+      if outbox#empty then (
+        while not inbox#empty do
+          outbox#push (inbox#pop)
+        done;
+      );
+      outbox#pop
+    method enqueue (elem : 'a) : unit =
+      inbox#push elem
+  end
+
+(*case*)
+let q = new queue;;
+q#enqueue 1;;
+q#enqueue 2;;
+q#enqueue 3;;
+let x = q#dequeue;;
+let y = q#dequeue;;
+q#enqueue 4;;
+let z = q#dequeue;;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(*Task 2*)
+(*Mules and Hinnies*)
+(*We are given the classes donkey and horse.
+class donkey w s = object ( self )
+val weight =( w : int )
+val name =( s : string )
+method species =" donkey "
+end ;;
+class horse w s = object ( self )
+val weight =( w : int )
+val name =( s : string )
+method species =" horse "
+end ;;
+Add to_string methods to both classes that display information about the
+object by invoking the appropriate methods and variables.
+# ( new horse 101 " Comet ") # to_string ;;
+- : string = "I am a horse , my name is Comet and I
+weigh 101 kilograms . My father is a horse and my
+mother is a horse ."
+# ( new donkey 102 " Donner ") # to_string ;;
+- : string = "I am a donkey , my name is Donner and I
+weigh 102 kilograms . My father is a donkey and my
+mother is a donkey ."
+Create classes hinny and mule with same signatures as horse and donkey.
+However their to_string methods should display as shown below.                                              
+# ( new hinny 103 " Vixen ") # species ;;
+- : string = " hinny "
+# ( new hinny 103 " Vixen ") # to_string ;;
+- : string =
+"I am a hinny , my name is Vixen and I weigh 103
+kilograms . My father is a horse and my mother is a
+donkey ."
+# ( new mule 104 " Prancer ") # species ;;
+- : string = " mule "
+# ( new mule 104 " Prancer ") # to_string ;;
+- : string =
+"I am a mule , my name is Prancer and I weigh 104
+kilograms . My father is a donkey and my mother is a
+horse ."
+Note that whenever a word among ”horse”,”donkey”,”hinny”or ”mule” is displayed you are supposed to invoke the appropriate methods.*)
+
+(*Solution*)
+class donkey (w : int) (s : string) =
+  object (self)
+    val weight = w
+    val name = s
+    method species = "donkey"
+    method to_string : string =
+      "I am a " ^ self#species ^ ", my name is " ^ name ^ " and I weigh " ^ string_of_int weight ^ " kilograms. My father is a donkey and my mother is a donkey."
+  end ;;
+class horse (w : int) (s : string) =
+  object (self)
+    val weight = w
+    val name = s
+    method species = "horse"
+    method to_string : string =
+      "I am a " ^ self#species ^ ", my name is " ^ name ^ " and I weigh " ^ string_of_int weight ^ " kilograms. My father is a horse and my mother is a horse."
+  end ;;
+class hinny (w : int) (s : string) =
+  object (self)
+    inherit horse w s
+    method species = "hinny"
+    method to_string : string =
+      "I am a " ^ self#species ^ ", my name is " ^ name ^ " and I weigh " ^ string_of_int weight ^ " kilograms. My father is a horse and my mother is a donkey."
+  end ;;
+class mule (w : int) (s : string) =
+  object (self)
+    inherit donkey w s
+    method species = "mule"
+    method to_string : string =
+      "I am a " ^ self#species ^ ", my name is " ^ name ^ " and I weigh " ^ string_of_int weight ^ " kilograms. My father is a donkey and my mother is a horse."
+  end ;;
+
+(*case*)
+let h = new horse 101 "Comet";;
+let d = new donkey 102 "Donner";;
+let hi = new hinny 103 "Vixen";;
+let m = new mule 104 "Prancer";;
+h#to_string;;
+d#to_string;;
+hi#to_string;;
+m#to_string;;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(*Task 3*)
+(*Robots*)
+(*You are given the interface (signature) of the module Robots.
+module type Robots =
+sig
+type t
+val create : bool array array -> ( int -> int * int
+-> int * int ) -> t
+val move : t -> int * int -> unit
+val print : t -> unit
+end ;;
+Define the structure of the module Robots for handling a two-dimensional (2D)
+world of robots. The 2D world is composed of NxN cells. Each cell can contain
+a robot. We have only one type of robots. A robot moves in the 2D world by
+using a function next_pos : int->int*int->int*int which, given an N and
+a current position of a robot, returns a next position within the borders of the
+2D world. Define a type Robots.t that is used as the abstract data structure.
+It includes all data used for the representation of a robot world.
+Write the following three functions.
+• create : bool array array -> (int -> int * int -> int * int)
+-> Robots.t, where the first argument is a bool matrix indicating the
+initial positions of the robots, and the second argument is the function
+next_pos.
+• move : Robots.t->(int*int)->unit, which makes the next legal move
+of a robot at the position given as the second argument. If a robot can not
+move (i.e. destination is already occupied/there is no robot at the starting
+position) to a location provided by next_pos, then the robot stays where
+it is.
+• print : Robots.t->unit that prints the robot world on screen. ”R”
+should indicate a robot on that position and ”x” should indicate that
+there is no robot at that position.
+A sample function next_pos is provided. The function returns the adjacent
+cell in the following pattern:                                                                                                                                          
+→ → → → ↓
+↑ → → ↓ ↓
+↑ ↑ · ↓ ↓
+↑ ↑ ← ← ↓
+↑ ← ← ← ←                                                                                                                                                                               
+# let next_pos n (x , y ) = match min (n -x -1) (n -y -1) | >
+min x | > min y with
+| z when x = z && y <( n -z -1) -> (x , y +1)
+| z when y = z && x >z - > (x -1 , y )
+| z when z =n -x -1 && y >z - > (x ,y -1)
+| z when z =n -y -1 && x <( n -z -1) -> ( x +1 , y )
+| _ -> (x , y ) ;;                                                                                                            
+# let a = Robots . create ([|[| false ; true ; false |]; [|
+false ; false ; false |];[| true ; false ; false |]|])
+next_pos ;;
+# Robots . print a ;;
+xRx
+xxx
+ Rxx
+ - : unit = ()
+# Robots . move a (1 ,0) ;;
+- : unit = ()
+# Robots . print a ;;
+xRx
+xxx
+Rxx
+- : unit = ()
+# Robots . move a (0 ,1) ;;
+- : unit = ()
+# Robots . print a ;;
+xxR
+xxx
+Rxx
+- : unit = ()
+# Robots . move a (0 ,2) ;;
+- : unit = ()
+# Robots . print a ;;
+xxx
+xxR
+Rxx
+- : unit = ()
+# Robots . move a (1 ,2) ;;                                                                                                                                          
+- : unit = ()
+# Robots . print a ;;
+xxx
+xxx
+RxR
+- : unit = ()
+# Robots . move a (2 ,2) ;;
+- : unit = ()
+# Robots . print a ;;
+xxx
+xxx
+RRx
+- : unit = ()
+# Robots . move a (2 ,1) ;;
+- : unit = ()
+# Robots . print a ;;
+xxx
+xxx
+RRx
+- : unit = ()*)
+
+(*Solution*)
+module Robots : sig
+  type t
+  val create : bool array array -> (int -> int * int -> int * int) -> t
+  val move : t -> int * int -> unit
+  val print : t -> unit
+end = struct
+  type t = bool array array
+  let create matrix next_pos = matrix
+  let move world (x, y) =
+    let n = Array.length world in
+    let (next_x, next_y) = next_pos n (x, y) in
+    if next_x >= 0 && next_x < n && next_y >= 0 && next_y < n && not world.(next_x).(next_y) then
+      (
+        world.(next_x).(next_y) <- true;
+        world.(x).(y) <- false
+      )
+  let print world =
+    let n = Array.length world in
+    for i = 0 to n - 1 do
+      for j = 0 to n - 1 do
+        if world.(i).(j) then
+          print_string "R"
+        else
+          print_string "x"
+      done;
+      print_newline ()
+    done
+end
+(*some part of code was seen like an idea from chatgpt.*)
+(*I believe that is not a problem and that I will not be banned from the subject, if it is a problem you can contact me so we can talk for the task.*)
+
+(*case*)
+let next_pos n (x, y) =
+  match min (n - x - 1) (n - y - 1), min x, min y with
+  | z when x = z && y < (n - z - 1) -> (x, y + 1)
+  | z when y = z && x > z -> (x - 1, y)
+  | z when z = n - x - 1 && y > z -> (x, y - 1)
+  | z when z = n - y - 1 && x < (n - z - 1) -> (x + 1, y)
+  | _ -> (x, y)
+let a = Robots.create
+  [|
+    [| false; true; false |];
+    [| false; false; false |];
+    [| true; false; false |]
+  |]
+  next_pos
+Robots.print a;;
+Robots.move a (1, 0);;
+Robots.print a;;
+Robots.move a (0, 1);;
+Robots.print a;;
+Robots.move a (0, 2);;
+Robots.print a;;
+Robots.move a (1, 2);;
+Robots.print a;;
+Robots.move a (2, 2);;
+Robots.print a;;
+Robots.move a (2, 1);;
+Robots.print a;;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+(*Name Surname, Student ID, Study program, Assistant surname*)
+(*Anastasija Temova, 89221055, Computer Science EN, Šišič*)
